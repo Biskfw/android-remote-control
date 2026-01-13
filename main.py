@@ -1,27 +1,17 @@
-import kivy
-from kivy.app import App
-from kivy.uix.label import Label
+from kivymd.app import MDApp
+from kivy.uix.screenmanager import Screen
 import threading
-import os
-import sys
+import bot_control
 
-# Fungsi agar aplikasi punya akses folder internal yang aman
-def get_path(filename):
-    if sys.platform == 'android':
-        from android.storage import app_storage_path
-        return os.path.join(app_storage_path(), filename)
-    return filename
+class MainScreen(Screen):
+    pass
 
-class RemoteApp(App):
+class RemoteControlApp(MDApp):
     def build(self):
-        # Menjalankan bot Telegram di background agar UI tidak macet
-        try:
-            import bot_control
-            threading.Thread(target=bot_control.start_bot, daemon=True).start()
-        except Exception as e:
-            print(f"Bot Error: {e}")
-
-        return Label(text="Service Remote Aktif\nKontrol via Telegram")
+        # Menjalankan Bot Telegram di jalur berbeda (Thread)
+        # agar aplikasi HP tetap bisa dibuka
+        threading.Thread(target=bot_control.start_bot, daemon=True).start()
+        return MainScreen()
 
 if __name__ == '__main__':
-    RemoteApp().run()
+    RemoteControlApp().run()
