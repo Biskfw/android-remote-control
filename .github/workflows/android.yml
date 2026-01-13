@@ -15,12 +15,28 @@ jobs:
       - name: Install Buildozer dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip build-essential git python3 dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
-          sudo apt-get install -y libgstreamer1.0-gstreamer-lite1.0-dev libgstreamer-plugins-base1.0-dev
+          sudo apt-get install -y \
+            python3-pip \
+            build-essential \
+            git \
+            python3-dev \
+            ffmpeg \
+            libsdl2-dev \
+            libsdl2-image-dev \
+            libsdl2-mixer-dev \
+            libsdl2-ttf-dev \
+            libportmidi-dev \
+            libswscale-dev \
+            libavformat-dev \
+            libavcodec-dev \
+            zlib1g-dev \
+            libgstreamer1.0-gstreamer-lite1.0-dev \
+            libgstreamer-plugins-base1.0-dev
           pip3 install --user --upgrade buildozer cython virtualenv
 
       - name: Build with Buildozer
         run: |
+          # Perintah ini akan menjalankan build secara otomatis
           yes | buildozer -v android debug
         continue-on-error: false
 
