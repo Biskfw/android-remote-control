@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Buildozer dependencies
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -32,18 +32,14 @@ jobs:
             libtool \
             pkg-config \
             zlib1g-dev \
-            libncurses5-dev \
             libncursesw5-dev \
-            libtinfo5 \
             cmake \
-            libgstreamer1.0-dev \
-            gstreamer1.0-plugins-base
+            libgstreamer1.0-dev
           
           pip3 install --user --upgrade buildozer cython
 
       - name: Build with Buildozer
         run: |
-          # Menjalankan build secara otomatis
           yes | buildozer -v android debug
         continue-on-error: false
 
