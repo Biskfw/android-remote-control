@@ -2,3 +2,5 @@ kivy
 kivymd
 pyTelegramBotAPI
 requests
+pillow
+plyer
